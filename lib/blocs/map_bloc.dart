@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:event_app/repositories/map_repository.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:meta/meta.dart';
@@ -18,6 +19,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       } else {
         emit(state.copyWith(mapStatus: MapStateStatus.error));
       }
+    });
+
+    on<MapUpateCoordinatesEvent>((event, emit) {
+      emit(state.copyWith(mapStatus: MapStateStatus.updating, coordinates: event.coordinates));
     });
   }
 }

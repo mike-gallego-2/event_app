@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -15,29 +16,28 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  late final _mapController;
-
-  @override
-  void initState() {
-    _mapController = MapController();
-    super.initState();
-  }
+  late final MapController _mapController;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MapBloc, MapState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state.mapStatus == MapStateStatus.updating) {
+          _mapController.move(state.coordinates, 10);
+        }
       },
       builder: (context, state) {
-        if (state.mapStatus == MapStateStatus.success) {
+        if (state.mapStatus == MapStateStatus.success || state.mapStatus == MapStateStatus.updating) {
           return Scaffold(
             body: Stack(
               children: [
                 FlutterMap(
                   options: MapOptions(
                     center: state.coordinates,
-                    zoom: 13.0,
+                    zoom: 10.0,
+                    onMapCreated: (controller) {
+                      _mapController = controller;
+                    },
                   ),
                   layers: [
                     TileLayerOptions(
@@ -82,12 +82,16 @@ class _MapPageState extends State<MapPage> {
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
-                            children: const [
-                              ProfileAvatar(),
-                              ProfileAvatar(),
-                              ProfileAvatar(),
-                              ProfileAvatar(),
-                              ProfileAvatar(),
+                            children: [
+                              ProfileAvatar(
+                                onTap: () => context
+                                    .read<MapBloc>()
+                                    .add(MapUpateCoordinatesEvent(coordinates: LatLng(41.2404965, -75.8485746))),
+                              ),
+                              const ProfileAvatar(),
+                              const ProfileAvatar(),
+                              const ProfileAvatar(),
+                              const ProfileAvatar(),
                             ],
                           ),
                         )

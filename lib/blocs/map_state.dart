@@ -1,10 +1,10 @@
 part of 'map_bloc.dart';
 
-class MapState {
+class MapState extends Equatable {
   final LatLng coordinates;
   final MapStateStatus mapStatus;
 
-  MapState({
+  const MapState({
     required this.coordinates,
     required this.mapStatus,
   });
@@ -18,10 +18,14 @@ class MapState {
       mapStatus: mapStatus ?? this.mapStatus,
     );
   }
+
+  @override
+  List<Object?> get props => [coordinates, mapStatus];
 }
 
 enum MapStateStatus {
   initial,
+  updating,
   processing,
   success,
   error,
