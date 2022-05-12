@@ -28,6 +28,7 @@ class EventApp extends StatelessWidget {
         create: (context) =>
             MapBloc(mapRepository: context.read<MapRepository>())..add(MapInitializeCoordinatesEvent()),
         child: const MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Event App',
           home: MapPage(),
         ),

@@ -21,7 +21,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         var pointStream = mapRepository.getPoints();
         await emit.forEach<QuerySnapshot<Map<String, dynamic>>>(pointStream, onData: (snapshot) {
           List<Point> points = snapshot.docs.map((doc) => EventPoint.fromJson(doc.data())).toList();
-          print(points.first.name);
           return state.copyWith(mapStatus: MapStateStatus.success, points: points);
         });
       } else {
