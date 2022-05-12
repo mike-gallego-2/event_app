@@ -1,5 +1,7 @@
 import 'package:event_app/blocs/map_bloc.dart';
 import 'package:event_app/constants/colors.dart';
+import 'package:event_app/constants/values.dart';
+import 'package:event_app/models/point.dart';
 import 'package:event_app/widgets/profile_avatar.dart';
 import 'package:event_app/widgets/swipe_indicator.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class _MapPageState extends State<MapPage> {
     return BlocConsumer<MapBloc, MapState>(
       listener: (context, state) {
         if (state.mapStatus == MapStateStatus.updating) {
-          _mapController.move(state.coordinates, 10);
+          _mapController.move(state.coordinates, zoom);
         }
       },
       builder: (context, state) {
@@ -34,7 +36,7 @@ class _MapPageState extends State<MapPage> {
                 FlutterMap(
                   options: MapOptions(
                     center: state.coordinates,
-                    zoom: 10.0,
+                    zoom: zoom,
                     onMapCreated: (controller) {
                       _mapController = controller;
                     },
@@ -51,17 +53,7 @@ class _MapPageState extends State<MapPage> {
                       },
                     ),
                     MarkerLayerOptions(
-                      markers: [
-                        Marker(
-                          width: 80.0,
-                          height: 80.0,
-                          point: state.coordinates,
-                          builder: (ctx) => Image.asset(
-                            'assets/markers/house.png',
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
+                      markers: state.points.map((point) => _customMarker(point)).toList(),
                     ),
                   ],
                 ),
@@ -108,6 +100,18 @@ class _MapPageState extends State<MapPage> {
           );
         }
       },
+    );
+  }
+
+  Marker _customMarker(Point point) {
+    return Marker(
+      width: 80.0,
+      height: 80.0,
+      point: LatLng(point.coordinates.latitude, point.coordinates.longitude),
+      builder: (ctx) => Image.asset(
+        'assets/markers/house.png',
+        color: Colors.blue,
+      ),
     );
   }
 }
