@@ -3,12 +3,13 @@ import 'package:event_app/constants/colors.dart';
 import 'package:event_app/constants/values.dart';
 import 'package:event_app/models/point.dart';
 import 'package:event_app/utilities/cached_tile_provider.dart';
-import 'package:event_app/widgets/swipe_indicator.dart';
+import 'package:event_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   late final MapController _mapController;
 
-  void _animtedMapMove(LatLng desinationLocation, double destinationZoom) {
+  void _animatedMapMove(LatLng desinationLocation, double destinationZoom) {
     final _latTween = Tween<double>(begin: _mapController.center.latitude, end: desinationLocation.latitude);
     final _lngTween = Tween<double>(begin: _mapController.center.longitude, end: desinationLocation.longitude);
     final _zoomTween = Tween<double>(begin: _mapController.zoom, end: destinationZoom);
@@ -56,7 +57,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     return BlocConsumer<MapBloc, MapState>(
       listener: (context, state) {
         if (state.mapStatus == MapStateStatus.updating) {
-          _animtedMapMove(state.coordinates, zoomMove);
+          _animatedMapMove(state.coordinates, zoomMove);
         }
       },
       builder: (context, state) {
@@ -73,6 +74,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     onMapCreated: (controller) {
                       _mapController = controller;
                     },
+                    interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                     plugins: [
                       MarkerClusterPlugin(),
                     ],
@@ -104,10 +106,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         );
                       },
                       onClusterTap: (node) {
-                        _animtedMapMove(node.point, zoomMove);
+                        _animatedMapMove(node.point, zoomMove);
                       },
                       zoomToBoundsOnClick: false,
-                      markers: state.points.map((point) => _customMarker(point)).toList(),
+                      markers: state.points.map((point) => _customMarker(point, state.points.indexOf(point))).toList(),
                     ),
                   ],
                 ),
@@ -148,20 +150,32 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  Marker _customMarker(Point point) {
+  Marker _customMarker(Point point, int index) {
     return Marker(
-      width: 80.0,
-      height: 80.0,
+      width: markerWidth,
+      height: markerHeight,
       anchorPos: AnchorPos.align(AnchorAlign.center),
       point: LatLng(point.coordinates.latitude, point.coordinates.longitude),
       builder: (ctx) => GestureDetector(
         onTap: () {
-          context.read<MapBloc>().add(
-              MapUpateCoordinatesEvent(coordinates: LatLng(point.coordinates.latitude, point.coordinates.longitude)));
+          context.read<MapBloc>().add(MapUpateCoordinatesEvent(
+              coordinates: LatLng(point.coordinates.latitude, point.coordinates.longitude), index: index));
         },
-        child: Image.asset(
-          'assets/markers/house.png',
-          color: point.private ? Colors.red : Colors.blue,
+        child: Column(
+          children: [
+            Expanded(
+                child: EventPopup(
+              isOpen: point.opened,
+            )),
+            const SizedBox(
+              height: 10,
+            ),
+            SvgPicture.asset(
+              'assets/markers/event.svg',
+              height: 30,
+              color: point.private ? Colors.red : markerColor,
+            ),
+          ],
         ),
       ),
     );

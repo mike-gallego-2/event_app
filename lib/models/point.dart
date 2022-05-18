@@ -7,13 +7,36 @@ abstract class Point {
   final String imageUrl;
   final bool private;
   final GeoPoint coordinates;
-  Point(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.imageUrl,
-      required this.private,
-      required this.coordinates});
+  final bool opened;
+  Point({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.imageUrl,
+    required this.private,
+    required this.coordinates,
+    required this.opened,
+  });
+
+  Point copyWith({
+    int? id,
+    String? name,
+    String? description,
+    String? imageUrl,
+    bool? private,
+    GeoPoint? coordinates,
+    bool? opened,
+  }) {
+    return EventPoint(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      private: private ?? this.private,
+      coordinates: coordinates ?? this.coordinates,
+      opened: opened ?? this.opened,
+    );
+  }
 }
 
 class EventPoint extends Point {
@@ -24,13 +47,16 @@ class EventPoint extends Point {
     required String imageUrl,
     private = false,
     required GeoPoint coordinates,
+    opened = false,
   }) : super(
-            id: id,
-            name: name,
-            description: description,
-            imageUrl: imageUrl,
-            private: private,
-            coordinates: coordinates);
+          id: id,
+          name: name,
+          description: description,
+          imageUrl: imageUrl,
+          private: private,
+          coordinates: coordinates,
+          opened: opened,
+        );
 
   factory EventPoint.fromJson(Map<String, dynamic> json) {
     return EventPoint(
@@ -66,13 +92,16 @@ class BasePoint extends Point {
     required String imageUrl,
     private = true,
     required GeoPoint coordinates,
+    opened = false,
   }) : super(
-            id: id,
-            name: name,
-            description: description,
-            imageUrl: imageUrl,
-            private: private,
-            coordinates: coordinates);
+          id: id,
+          name: name,
+          description: description,
+          imageUrl: imageUrl,
+          private: private,
+          coordinates: coordinates,
+          opened: opened,
+        );
 
   factory BasePoint.fromJson(Map<String, dynamic> json) {
     return BasePoint(
