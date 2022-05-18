@@ -28,12 +28,16 @@ class EventPopup extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(2),
-                            child: CachedNetworkImage(
-                              imageUrl: point.imageUrl,
-                              fit: BoxFit.cover,
-                              height: double.infinity,
-                            )),
+                          borderRadius: BorderRadius.circular(2),
+                          child: CachedNetworkImage(
+                            imageUrl: point.imageUrl,
+                            fit: BoxFit.cover,
+                            height: double.infinity,
+                            errorWidget: (context, url, error) {
+                              return Image.asset('assets/events/event.jpg', fit: BoxFit.cover, height: double.infinity);
+                            },
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
