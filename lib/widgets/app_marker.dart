@@ -23,7 +23,7 @@ class AppMarker extends StatelessWidget {
         children: [
           Expanded(
             child: EventPopup(
-              isOpen: point.opened,
+              point: point,
             ),
           ),
           const SizedBox(

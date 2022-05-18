@@ -1,65 +1,47 @@
-import 'dart:ui';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:event_app/constants/constants.dart';
+import 'package:event_app/models/models.dart';
 import 'package:event_app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class EventPopup extends StatelessWidget {
-  final bool isOpen;
-  const EventPopup({Key? key, required this.isOpen}) : super(key: key);
+  final Point point;
+  const EventPopup({Key? key, required this.point}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: isOpen,
+      visible: point.opened,
       child: Stack(
         children: [
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  child: ClipPath(
-                    clipper: _TriangleClipper(),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                      child: CustomPaint(
-                          painter: _TrianglePainter(
-                              paintingStyle: PaintingStyle.fill, strokeColor: accentColor.withOpacity(0.2))),
-                    ),
-                  )),
-            ),
-          ),
           Container(
-            height: 85,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: accentColor.withOpacity(0.2)),
+            height: 100,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: accentColorOpaque),
             child: ClipRRect(
-              clipBehavior: Clip.hardEdge,
               borderRadius: BorderRadius.circular(10),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: imageFilter,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: standardPadding,
                   child: Row(
                     children: [
                       Expanded(
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(2),
-                          child: Image.asset(
-                            'assets/events/event.jpg',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                            borderRadius: BorderRadius.circular(2),
+                            child: CachedNetworkImage(
+                              imageUrl: point.imageUrl,
+                              fit: BoxFit.cover,
+                              height: double.infinity,
+                            )),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const AppText(
-                              text: 'Event Name X',
+                            AppText(
+                              text: point.name,
                               fontWeight: bold,
                             ),
                             const SizedBox(height: 5),
@@ -87,6 +69,8 @@ class EventPopup extends StatelessWidget {
                                 const AppText(text: '16:37')
                               ],
                             ),
+                            standardHeight,
+                            AppText(text: point.description)
                           ],
                         ),
                       ),
@@ -99,50 +83,5 @@ class EventPopup extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class _TriangleClipper extends CustomClipper<Path> {
-  @override
-  getClip(Size size) {
-    return Path()
-      ..lineTo(size.width / 2, size.height)
-      ..lineTo(size.width, 0)
-      ..lineTo(0, 0);
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper oldClipper) => false;
-}
-
-class _TrianglePainter extends CustomPainter {
-  final Color strokeColor;
-  final PaintingStyle paintingStyle;
-  final double strokeWidth;
-
-  _TrianglePainter({this.strokeColor = Colors.black, this.strokeWidth = 3, this.paintingStyle = PaintingStyle.stroke});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = strokeColor
-      ..strokeWidth = strokeWidth
-      ..style = paintingStyle;
-
-    canvas.drawPath(getTrianglePath(size.width, size.height), paint);
-  }
-
-  Path getTrianglePath(double x, double y) {
-    return Path()
-      ..lineTo(x / 2, y)
-      ..lineTo(x, 0)
-      ..lineTo(0, 0);
-  }
-
-  @override
-  bool shouldRepaint(_TrianglePainter oldDelegate) {
-    return oldDelegate.strokeColor != strokeColor ||
-        oldDelegate.paintingStyle != paintingStyle ||
-        oldDelegate.strokeWidth != strokeWidth;
   }
 }

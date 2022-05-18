@@ -114,25 +114,38 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 Positioned.fill(
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height / 3,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.2,
                       width: double.infinity,
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: const BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-                      ),
-                      child: Column(
-                        children: [
-                          const SwipeIndicator(),
-                          const SizedBox(height: 16),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: const [],
+                      child: Center(
+                        child: Container(
+                          height: 65,
+                          margin: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: primaryColorOpaque,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: BackdropFilter(
+                              filter: imageFilter,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    AppText(text: 'Expand more option', fontWeight: bold, fontSize: headerText),
+                                    SizedBox(width: 10),
+                                    Icon(
+                                      Icons.keyboard_arrow_up,
+                                      size: 30,
+                                      color: textColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          )
-                        ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
