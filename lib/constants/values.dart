@@ -10,7 +10,7 @@ const zoomMove = 16.0;
 
 // marker
 const markerHeight = 160.0;
-const markerWidth = 200.0;
+const markerWidth = 250.0;
 
 // font size
 const headerText = 16.0;

@@ -27,7 +27,7 @@ class AppText extends StatelessWidget {
       padding: EdgeInsets.all(padding),
       child: Text(
         text,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           color: color,
           fontSize: fontSize,
           fontWeight: fontWeight,
@@ -35,7 +35,6 @@ class AppText extends StatelessWidget {
           height: height,
         ),
         textAlign: textAlign,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }

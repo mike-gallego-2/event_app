@@ -16,7 +16,6 @@ class EventPopup extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            height: 100,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: accentColorOpaque),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),

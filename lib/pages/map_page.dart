@@ -85,9 +85,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         'accessToken': dotenv.get('MAPBOX_ACCESS_TOKEN'),
                         'id': dotenv.get('MAPBOX_ID'),
                       },
-                      attributionBuilder: (_) {
-                        return const AppText(text: copyright);
-                      },
                     ),
                     MarkerClusterLayerOptions(
                       anchor: AnchorPos.align(AnchorAlign.center),
@@ -110,6 +107,24 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       markers: state.points.map((point) => _customMarker(point, state.points.indexOf(point))).toList(),
                     ),
                   ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: largePadding,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        AppText(
+                          text: 'Michael Gallego',
+                          fontWeight: bold,
+                          fontSize: headerText,
+                        ),
+                        ProfileAvatar()
+                      ],
+                    ),
+                  ),
                 ),
                 Positioned.fill(
                   child: Align(
