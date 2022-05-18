@@ -29,7 +29,14 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     });
 
     on<MapUpateCoordinatesEvent>((event, emit) {
-      emit(state.copyWith(mapStatus: MapStateStatus.updating, coordinates: event.coordinates));
+      List<Point> newPoints = state.points;
+      for (var element in newPoints) {
+        element.opened
+            ? newPoints[newPoints.indexOf(element)] = newPoints[newPoints.indexOf(element)].copyWith(opened: false)
+            : null;
+      }
+      newPoints[event.index] = newPoints[event.index].copyWith(opened: !state.points[event.index].opened);
+      emit(state.copyWith(mapStatus: MapStateStatus.updating, coordinates: event.coordinates, points: newPoints));
     });
   }
 }
