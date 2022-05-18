@@ -7,5 +7,6 @@ class MapInitializeCoordinatesEvent extends MapEvent {}
 
 class MapUpateCoordinatesEvent extends MapEvent {
   final LatLng coordinates;
-  MapUpateCoordinatesEvent({required this.coordinates});
+  final int index;
+  MapUpateCoordinatesEvent({required this.coordinates, required this.index});
 }
