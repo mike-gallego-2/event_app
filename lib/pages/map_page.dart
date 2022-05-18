@@ -1,7 +1,6 @@
 import 'package:event_app/blocs/map_bloc.dart';
-import 'package:event_app/constants/colors.dart';
-import 'package:event_app/constants/values.dart';
-import 'package:event_app/models/point.dart';
+import 'package:event_app/constants/constants.dart';
+import 'package:event_app/models/models.dart';
 import 'package:event_app/utilities/cached_tile_provider.dart';
 import 'package:event_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapPage extends StatefulWidget {
@@ -88,7 +86,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         'id': dotenv.get('MAPBOX_ID'),
                       },
                       attributionBuilder: (_) {
-                        return const Text("© OpenStreetMap contributors");
+                        return const AppText(text: copyright);
                       },
                     ),
                     MarkerClusterLayerOptions(
@@ -114,30 +112,31 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   ],
                 ),
                 Positioned.fill(
-                    child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height / 3,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: const BoxDecoration(
-                      color: primaryColor,
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-                    ),
-                    child: Column(
-                      children: [
-                        const SwipeIndicator(),
-                        const SizedBox(height: 16),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: const [],
-                          ),
-                        )
-                      ],
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 3,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: const BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+                      ),
+                      child: Column(
+                        children: [
+                          const SwipeIndicator(),
+                          const SizedBox(height: 16),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: const [],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ))
+                )
               ],
             ),
           );
@@ -156,28 +155,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       height: markerHeight,
       anchorPos: AnchorPos.align(AnchorAlign.center),
       point: LatLng(point.coordinates.latitude, point.coordinates.longitude),
-      builder: (ctx) => GestureDetector(
-        onTap: () {
-          context.read<MapBloc>().add(MapUpateCoordinatesEvent(
-              coordinates: LatLng(point.coordinates.latitude, point.coordinates.longitude), index: index));
-        },
-        child: Column(
-          children: [
-            Expanded(
-                child: EventPopup(
-              isOpen: point.opened,
-            )),
-            const SizedBox(
-              height: 10,
-            ),
-            SvgPicture.asset(
-              'assets/markers/event.svg',
-              height: 30,
-              color: point.private ? Colors.red : markerColor,
-            ),
-          ],
-        ),
-      ),
+      builder: (ctx) => AppMarker(point: point, index: index),
     );
   }
 }

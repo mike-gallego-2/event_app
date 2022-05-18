@@ -23,3 +23,9 @@ const textSpacing = 0.5;
 
 // height
 const increasedHeight = 1.5;
+
+// copyright
+const copyright = "© OpenStreetMap contributors";
+
+// icon
+const iconSize = 30.0;

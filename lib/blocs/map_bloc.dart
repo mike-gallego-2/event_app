@@ -30,12 +30,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     on<MapUpateCoordinatesEvent>((event, emit) {
       List<Point> newPoints = state.points;
-      for (var element in newPoints) {
-        element.opened
-            ? newPoints[newPoints.indexOf(element)] = newPoints[newPoints.indexOf(element)].copyWith(opened: false)
-            : null;
+
+      // clear the old points
+      for (var point in newPoints) {
+        if (point.opened) {
+          newPoints[newPoints.indexOf(point)] = newPoints[newPoints.indexOf(point)].copyWith(opened: false);
+        }
       }
-      newPoints[event.index] = newPoints[event.index].copyWith(opened: !state.points[event.index].opened);
+      // set the new point to opened
+      newPoints[event.index] = newPoints[event.index].copyWith(opened: true);
       emit(state.copyWith(mapStatus: MapStateStatus.updating, coordinates: event.coordinates, points: newPoints));
     });
   }
